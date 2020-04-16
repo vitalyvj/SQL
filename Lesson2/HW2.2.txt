@@ -1,0 +1,64 @@
+vitaly@VirtualBox:~$ mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 18
+Server version: 8.0.19 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE example;
+Query OK, 1 row affected (0,04 sec)
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| example            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0,01 sec)
+
+mysql> USE example
+Database changed
+
+mysql> CREATE TABLE users (id INT UNSIGNED, name VARCHAR(100));
+Query OK, 0 rows affected (0,04 sec)
+
+mysql> DESCRIBE users;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | int unsigned | YES  |     | NULL    |       |
+| name  | varchar(100) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+2 rows in set (0,00 sec)
+
+mysql> SELECT * FROM users;
+Empty set (0,00 sec)
+
+mysql> INSERT INTO users VALUES (1, 'Ivanov'), (2, 'Petrov'), (3, 'Sidorov');
+Query OK, 3 rows affected (0,01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM users;
++------+---------+
+| id   | name    |
++------+---------+
+|    1 | Ivanov  |
+|    2 | Petrov  |
+|    3 | Sidorov |
++------+---------+
+3 rows in set (0,00 sec)
+
+mysql> \q
+Bye
+
+vitaly@VirtualBox:~$ 

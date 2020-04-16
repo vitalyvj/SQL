@@ -1,0 +1,49 @@
+vitaly@VirtualBox:~$ ls -a
+ .                  .gnupg                              snap                          Документы
+ ..                 .ICEauthority                       .sudo_as_admin_successful     Загрузки
+ .bash_history      .local                              .vboxclient-clipboard.pid     Изображения
+ .bash_logout       .mozilla                            .vboxclient-display.pid       Музыка
+ .bashrc            mysql-apt-config_0.8.15-1_all.deb   .vboxclient-draganddrop.pid   Общедоступные
+ .cache             .mysql_history                      .vboxclient-seamless.pid     'Рабочий стол'
+ .config            .profile                            .wget-hsts                    Шаблоны
+ examples.desktop   .python_history                     Видео
+
+vitaly@VirtualBox:~$ nano .my.cnf
+
+vitaly@VirtualBox:~$ ls -a
+ .                  .gnupg                              .python_history               Видео
+ ..                 .ICEauthority                       snap                          Документы
+ .bash_history      .local                              .sudo_as_admin_successful     Загрузки
+ .bash_logout       .mozilla                            .vboxclient-clipboard.pid     Изображения
+ .bashrc            .my.cnf                             .vboxclient-display.pid       Музыка
+ .cache             mysql-apt-config_0.8.15-1_all.deb   .vboxclient-draganddrop.pid   Общедоступные
+ .config            .mysql_history                      .vboxclient-seamless.pid     'Рабочий стол'
+ examples.desktop   .profile                            .wget-hsts                    Шаблоны
+
+vitaly@VirtualBox:~$ ll .my*
+-rw-r--r-- 1 vitaly vitaly   34 апр 16 03:45 .my.cnf
+-rw------- 1 vitaly vitaly 1010 апр 16 03:48 .mysql_history
+
+vitaly@VirtualBox:~$ chmod 600 .my.cnf 
+
+vitaly@VirtualBox:~$ ll .my*
+-rw------- 1 vitaly vitaly   34 апр 16 03:45 .my.cnf
+-rw------- 1 vitaly vitaly 1010 апр 16 03:48 .mysql_history
+
+vitaly@VirtualBox:~$ mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 16
+Server version: 8.0.19 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> 
+mysql> \q
+Bye
+vitaly@VirtualBox:~$ 
