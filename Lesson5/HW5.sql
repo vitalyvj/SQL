@@ -86,7 +86,10 @@ UPDATE users SET birthday_at = '1946-06-14' WHERE id = 5;
 
 SELECT first_name, last_name, birthday_at FROM users;
 
-SELECT first_name, last_name, DATE_FORMAT(birthday_at, '%M') AS birthday_month FROM users WHERE DATE_FORMAT(birthday_at, '%M') IN ('May', 'August');
+SELECT 
+  first_name, last_name, MONTHNAME(birthday_at) AS birthday_month 
+FROM users 
+WHERE MONTHNAME(birthday_at) IN ('May', 'August');
 
 
 -- Задание 1.5
