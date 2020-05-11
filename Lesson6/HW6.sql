@@ -499,63 +499,80 @@ DESC communities_users;
 
 ALTER TABLE communities_users 
   ADD CONSTRAINT communities_users_community_id_fk
-    FOREIGN KEY (community_id) REFERENCES communities(id),
+    FOREIGN KEY (community_id) REFERENCES communities(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT communities_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id);
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE;
 
 DESC friendship;
 
 ALTER TABLE friendship 
   ADD CONSTRAINT friendship_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT friendship_friend_id_fk
-    FOREIGN KEY (friend_id) REFERENCES users(id),
+    FOREIGN KEY (friend_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT friendship_status_id_fk
-    FOREIGN KEY (status_id) REFERENCES friendship_statuses(id);
+    FOREIGN KEY (status_id) REFERENCES friendship_statuses(id)
+      ON DELETE CASCADE;
 
 DESC likes;
 
 ALTER TABLE likes 
   ADD CONSTRAINT likes_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT likes_target_type_id_fk
-    FOREIGN KEY (target_type_id) REFERENCES target_types(id);
+    FOREIGN KEY (target_type_id) REFERENCES target_types(id)
+      ON DELETE CASCADE;
 
 DESC media;
 
 ALTER TABLE media 
   ADD CONSTRAINT media_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT media_media_type_id_fk
-    FOREIGN KEY (media_type_id) REFERENCES media_types(id);
+    FOREIGN KEY (media_type_id) REFERENCES media_types(id)
+      ON DELETE CASCADE;
 
 DESC messages;
 
 ALTER TABLE messages 
   ADD CONSTRAINT messages_from_user_id_fk
-    FOREIGN KEY (from_user_id) REFERENCES users(id),
+    FOREIGN KEY (from_user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT messages_to_user_id_fk
-    FOREIGN KEY (to_user_id) REFERENCES users(id),
+    FOREIGN KEY (to_user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT messages_community_id_fk
-    FOREIGN KEY (community_id) REFERENCES communities(id);
+    FOREIGN KEY (community_id) REFERENCES communities(id)
+      ON DELETE CASCADE;
 
 DESC posts;
 
 ALTER TABLE posts 
   ADD CONSTRAINT posts_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT posts_community_id_fk
-    FOREIGN KEY (community_id) REFERENCES communities(id),
+    FOREIGN KEY (community_id) REFERENCES communities(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT posts_media_id_fk
-    FOREIGN KEY (media_id) REFERENCES media(id);
+    FOREIGN KEY (media_id) REFERENCES media(id)
+      ON DELETE CASCADE;
 
 DESC profiles;
 
 ALTER TABLE profiles 
   ADD CONSTRAINT profiles_user_id_fk
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE,
   ADD CONSTRAINT profiles_photo_id_fk
-    FOREIGN KEY (photo_id) REFERENCES media(id);
+    FOREIGN KEY (photo_id) REFERENCES media(id)
+      ON DELETE SET NULL;
 
 
 -- Задание 6.3
@@ -594,34 +611,15 @@ SELECT
   
 -- Задание 6.5
 
-SELECT user_id, COUNT(user_id) AS activity FROM likes GROUP BY user_id ORDER BY activity DESC;
--- считаем max activity
-
-SELECT id, first_name, last_name FROM users WHERE
-  id NOT IN (SELECT user_id FROM likes)
+SELECT 
+    first_name, 
+    last_name, 
+    (SELECT COUNT(*) FROM likes WHERE likes.user_id = users.id) + 
+    (SELECT COUNT(*) FROM media WHERE media.user_id = users.id) + 
+    (SELECT COUNT(*) FROM messages WHERE messages.from_user_id = users.id) +
+    (SELECT COUNT(*) FROM posts WHERE posts.user_id = users.id) AS activity 
+  FROM users
+  ORDER BY activity, users.id
   LIMIT 10;
--- activity = 0. Если в данной группе меньше 10 человек, добавляем следующую группу активности
-
-SELECT id, first_name, last_name FROM users WHERE
-  id NOT IN (SELECT user_id FROM likes) OR 
-  id IN (SELECT user_id FROM likes GROUP BY user_id HAVING COUNT(user_id) BETWEEN 1 AND 1)
-  LIMIT 10;
--- activity = 1. Если в обеих группах меньше 10 человек, добавляем следующую группу активности
-
-SELECT id, first_name, last_name FROM users WHERE
-  id NOT IN (SELECT user_id FROM likes) OR 
-  id IN (SELECT user_id FROM likes GROUP BY user_id HAVING COUNT(user_id) BETWEEN 1 AND 2)
-  LIMIT 10;
--- activity = 2. Если в трех группах меньше 10 человек, добавляем следующую группу активности
-
-
-SELECT id, first_name, last_name FROM users WHERE
-  id NOT IN (SELECT user_id FROM likes) OR 
-  id IN (SELECT user_id FROM likes GROUP BY user_id HAVING COUNT(user_id) BETWEEN 1 AND 3)
-  LIMIT 10;
--- activity = 3. Если в четырех группах меньше 10 человек, добавляем следующую группу активности. И так далее до activity = max
-
--- Сделать универсально с сортировкой по COUNT(user_id), к сожалению, не получилось. При объединении запросов она теряется.
--- Автоматизировать модель можно с помощью цикла с переменной, принимающей значения от 1 до max activity
-
+  
   
