@@ -107,8 +107,8 @@ SELECT
   p.description, 
   c.name AS 'catalog' 
   FROM products AS p 
-  JOIN catalogs AS c 
-  ON p.catalog_id = c.id;
+    JOIN catalogs AS c 
+      ON p.catalog_id = c.id;
 
 
 -- Задание 7.3
@@ -146,10 +146,13 @@ SELECT * FROM flights;
 
 SELECT 
   f.id, 
-  c.name AS flights_from, 
-  (SELECT name FROM cities WHERE f.flights_to = label) AS flights_to
+  c_from.name AS flights_from, 
+  c_to.name AS flights_to
   FROM flights AS f 
-  JOIN cities AS c 
-  ON f.flights_from = c.label 
+    JOIN cities AS c_from
+      ON f.flights_from = c_from.label
+    JOIN cities AS c_to
+      ON f.flights_to = c_to.label 
   ORDER BY f.id;
-
+  
+  
