@@ -30,9 +30,15 @@ SELECT
 -- Задание 8.3
 
 SELECT 
+    u.id, 
     first_name, 
     last_name, 
-    (COUNT(l.id) + COUNT(m.id) + COUNT(ms.id) + COUNT(p.id)) AS activity
+    (
+      COUNT(DISTINCT l.id) + 
+      COUNT(DISTINCT m.id) + 
+      COUNT(DISTINCT ms.id) + 
+      COUNT(DISTINCT p.id)
+    ) AS activity
   FROM users AS u
     LEFT JOIN likes AS l
       ON l.user_id = u.id 
