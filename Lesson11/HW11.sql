@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS logs;
 CREATE TABLE logs (
   id SERIAL PRIMARY KEY,
   table_name VARCHAR(255) NOT NULL,
-  primary_key INT NOT NULL,
+  primary_key INT UNSIGNED NOT NULL,
   value_name VARCHAR(255) NOT NULL,
   created_at DATETIME DEFAULT NOW()
 ) ENGINE = ARCHIVE;
