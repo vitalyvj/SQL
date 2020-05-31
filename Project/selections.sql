@@ -18,7 +18,7 @@ SELECT DISTINCT
     s.name,
     FIRST_VALUE(price) OVER last_price * s.shares_outstanding AS cap
   FROM transactions AS t
-    LEFT JOIN shares AS s
+    JOIN shares AS s
       ON s.id = t.share_id
   WINDOW last_price AS (PARTITION BY s.id ORDER BY t.created_at DESC)
   ORDER BY cap DESC
@@ -47,7 +47,7 @@ SELECT ROUND(AVG(cap)) AS avgerage_cap FROM
     s.name,
     FIRST_VALUE(price) OVER last_price * s.shares_outstanding AS cap
   FROM transactions AS t
-    LEFT JOIN shares AS s
+    JOIN shares AS s
       ON s.id = t.share_id
   WINDOW last_price AS (PARTITION BY s.id ORDER BY t.created_at DESC)
   ORDER BY cap DESC)
