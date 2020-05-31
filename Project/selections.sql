@@ -14,12 +14,14 @@ SELECT s.name, SUM(price * quantity) AS trades
 
 -- 10 самых дорогих компаний, торгующихся на бирже
 
-SELECT s.name, ROUND(AVG(t.price) * s.shares_outstanding) AS cap
+SELECT DISTINCT 
+    s.name,
+    FIRST_VALUE(price) OVER last_price * s.shares_outstanding AS cap
   FROM transactions AS t
-    JOIN shares AS s
-      ON s.id = t.share_id 
-  GROUP BY t.share_id
-  ORDER BY cap DESC 
+    LEFT JOIN shares AS s
+      ON s.id = t.share_id
+  WINDOW last_price AS (PARTITION BY s.id ORDER BY t.created_at DESC)
+  ORDER BY cap DESC
   LIMIT 10;
 
 
@@ -41,10 +43,13 @@ SELECT CONCAT(c.first_name, c.last_name) AS investor, COUNT(cs.share_id) AS shar
 -- средняя капитализация компаний, торгующихся на бирже
 
 SELECT ROUND(AVG(cap)) AS avgerage_cap FROM 
-  (SELECT s.name, ROUND(AVG(t.price) * s.shares_outstanding) AS cap
-    FROM transactions AS t
-      JOIN shares AS s
-        ON s.id = t.share_id 
-    GROUP BY t.share_id)
-  AS cap;
+  (SELECT DISTINCT 
+    s.name,
+    FIRST_VALUE(price) OVER last_price * s.shares_outstanding AS cap
+  FROM transactions AS t
+    LEFT JOIN shares AS s
+      ON s.id = t.share_id
+  WINDOW last_price AS (PARTITION BY s.id ORDER BY t.created_at DESC)
+  ORDER BY cap DESC)
+  AS needless_alias;
 
